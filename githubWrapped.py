@@ -154,20 +154,36 @@ def get_github_wrapped(username, years=None):
         "X-GitHub-Api-Version": "2022-11-28"
     } if token else {}
 
-    user_url = "https://api.github.com/user"  # Accessing private user data
+    user_url = f"https://api.github.com/users/{username}"
+    repos_url = f"https://api.github.com/users/{username}/repos"
+    events_url = f"https://api.github.com/users/{username}/events/public"
+
     response = requests.get(user_url, headers=headers)
+    repos_response = requests.get(repos_url, headers=headers)
+    events_response = requests.get(events_url, headers=headers)
 
-    if response.status_code == 200:
+    if response.status_code == 200 and repos_response.status_code == 200 and events_response.status_code == 200:
         user_data = response.json()
+        repos_data = repos_response.json()
+        events_data = events_response.json()
 
-        print("\n🎉 GitHub Wrapped 🎉\n")
+        print("\n🎉 GitHub Wrapped 2024 🎉\n")
         print(f"👤 Username: {user_data.get('login', 'N/A')}")
         print(f"📛 Name: {user_data.get('name', 'N/A')}")
+        print(f"📝 Bio: {user_data.get('bio', 'N/A')}")
+        print(f"📦 Public Repos: {user_data.get('public_repos', 'N/A')}")
+        print(f"👥 Followers: {user_data.get('followers', 'N/A')} | Following: {user_data.get('following', 'N/A')}")
         print(f"🔗 Profile URL: {user_data.get('html_url', 'N/A')}\n")
+
+        print("🚀 Top 5 Repositories:")
+        top_repos = sorted(repos_data, key=lambda repo: repo.get('stargazers_count', 0), reverse=True)[:5]
+        for repo in top_repos:
+            print(f"  ⭐ {repo.get('stargazers_count', 0)} | {repo.get('name', 'N/A')} - {repo.get('html_url', 'N/A')}")
 
         # Default to last year if no years are provided
         if not years:
             years = [datetime.datetime.now().year - 1]
+            # print(f"📅 No years specified. Using data for {years[0]} by default.")
 
         for year in years:
             print(f"\n📊 GitHub Activity for {year}:")
