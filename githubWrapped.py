@@ -177,8 +177,8 @@ def get_github_wrapped(username, years=None):
         events_data = events_response.json()
 
         username = f'{username}'
-        followers = f'{user_data.get('followers', 'N/A')}'
-        public_repos = f'{user_data.get('public_repos', 'N/A')}'
+        followers = f"{user_data.get('followers', 'N/A')}"
+        public_repos = f"{user_data.get('public_repos', 'N/A')}"
 
         # Default to last year if no years are provided
         if not years:
