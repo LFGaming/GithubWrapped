@@ -245,16 +245,16 @@ def get_github_wrapped(username, years=None):
 
     # Create the pie chart with updated labels
     ax.pie(sizes, labels=labels, autopct=autopct_format, startangle=140, colors=colors, textprops={'color': "white"})
-    ax.set_title(f"{username}'s GitHub Wrapped", color="white", fontsize=14)
+    # ax.set_title(f"{username}'s GitHub Wrapped", color="white", fontsize=14)
 
     # Save pie chart as an image
     pie_chart_path = "pie_chart.png"
-    plt.savefig(pie_chart_path, bbox_inches="tight", facecolor="black")
+    plt.savefig(pie_chart_path, bbox_inches="tight", facecolor="#011627")
     plt.close()
 
     # Create the final image
     img_width, img_height = 800, 600
-    img = Image.new("RGB", (img_width, img_height), color=(20, 20, 20))
+    img = Image.new("RGB", (img_width, img_height), color="#011627")
     draw = ImageDraw.Draw(img)
 
     # Load fonts (use a built-in one or specify a ttf path)
@@ -266,7 +266,7 @@ def get_github_wrapped(username, years=None):
         font_text = ImageFont.load_default()
 
     # Add text
-    draw.text((20, 20), f"{username}", fill="white", font=font_title)
+    draw.text((20, 20), f"{username}'s GitHub Wrapped", fill="white", font=font_title)
     draw.text((20, 60), f"Public Repos: {public_repos}", fill="white", font=font_text)
     draw.text((20, 90), f"Followers: {followers}", fill="white", font=font_text)
     draw.text((20, 120), "Top Repositories:", fill="white", font=font_text)
