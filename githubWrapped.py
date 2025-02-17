@@ -234,13 +234,22 @@ def get_github_wrapped(username, years=None):
 
     # Create figure
     fig, ax = plt.subplots(figsize=(5, 5), facecolor="black")
-    ax.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=140, colors=colors, textprops={'color':"white"})
+
+    # Define a function to show both percentage and actual count
+    def autopct_format(p):
+        total = sum(sizes)
+        count = int(p * total / 100)  # Convert percentage to actual count
+        return f"{p:.1f}%\n({count})"  # Show both percentage and count
+
+    # Create the pie chart with updated labels
+    ax.pie(sizes, labels=labels, autopct=autopct_format, startangle=140, colors=colors, textprops={'color': "white"})
     ax.set_title(f"{username}'s GitHub Wrapped", color="white", fontsize=14)
 
     # Save pie chart as an image
     pie_chart_path = "pie_chart.png"
     plt.savefig(pie_chart_path, bbox_inches="tight", facecolor="black")
     plt.close()
+
 
     # Create the final image
     img_width, img_height = 800, 600
