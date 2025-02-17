@@ -3,8 +3,17 @@ import datetime
 import os
 from dotenv import load_dotenv
 from dateutil import parser  # Handles timezone-aware datetime parsing
+import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
+import os
 
 load_dotenv()
+
+global commit_count
+pr_opened = 0
+pr_closed = 0
+issues_opened = 0
+issues_closed = 0
 
 def get_commit_count(username, headers, year):
     """
@@ -167,12 +176,16 @@ def get_github_wrapped(username, years=None):
         repos_data = repos_response.json()
         events_data = events_response.json()
 
+        username = f'{username}'
+        followers = f'{user_data.get('followers', 'N/A')}'
+        public_repos = f'{user_data.get('public_repos', 'N/A')}'
+
         print("\n🎉 GitHub Wrapped 2024 🎉\n")
         print(f"👤 Username: {user_data.get('login', 'N/A')}")
         print(f"📛 Name: {user_data.get('name', 'N/A')}")
         print(f"📝 Bio: {user_data.get('bio', 'N/A')}")
-        print(f"📦 Public Repos: {user_data.get('public_repos', 'N/A')}")
-        print(f"👥 Followers: {user_data.get('followers', 'N/A')} | Following: {user_data.get('following', 'N/A')}")
+        print(f"📦 Public Repos: {public_repos}")
+        print(f"👥 Followers: {followers} | Following: {user_data.get('following', 'N/A')}")
         print(f"🔗 Profile URL: {user_data.get('html_url', 'N/A')}\n")
 
         print("🚀 Top 5 Repositories:")
@@ -194,6 +207,12 @@ def get_github_wrapped(username, years=None):
             # Get Pull Request and Issue counts for the year
             pr_opened, pr_closed, issues_opened, issues_closed = get_pr_and_issue_counts(username, headers, year)
 
+            commits = commit_count
+            prs_opened = pr_opened
+            prs_closed = pr_closed
+            issues_opened = issues_opened
+            issues_closed = issues_closed
+            
             print(f"  ✅ Commits: {commit_count}")
             print(f"  🔀 Pull Requests Opened: {pr_opened}")
             print(f"  🔀 Pull Requests Closed: {pr_closed}")
@@ -201,8 +220,64 @@ def get_github_wrapped(username, years=None):
             print(f"  ❌ Issues Closed: {issues_closed}")
     else:
         print("User not found or API request failed.")
+        
+            
+    # Mock data (replace with actual GitHub data)
+
+
+    # top_repos = [("Project1", 100), ("Project2", 85), ("Project3", 75)]
+
+    # Pie chart data
+    labels = ["Commits", "PRs Opened", "PRs Closed", "Issues Opened", "Issues Closed"]
+    sizes = [commits, prs_opened, prs_closed, issues_opened, issues_closed]
+    colors = ["#8A2BE2", "#7B68EE", "#6A5ACD", "#483D8B", "#2E1A47"]  # Shades of purple
+
+    # Create figure
+    fig, ax = plt.subplots(figsize=(5, 5), facecolor="black")
+    ax.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=140, colors=colors, textprops={'color':"white"})
+    ax.set_title(f"{username}'s GitHub Wrapped", color="white", fontsize=14)
+
+    # Save pie chart as an image
+    pie_chart_path = "pie_chart.png"
+    plt.savefig(pie_chart_path, bbox_inches="tight", facecolor="black")
+    plt.close()
+
+    # Create the final image
+    img_width, img_height = 800, 600
+    img = Image.new("RGB", (img_width, img_height), color=(20, 20, 20))
+    draw = ImageDraw.Draw(img)
+
+    # Load fonts (use a built-in one or specify a ttf path)
+    try:
+        font_title = ImageFont.truetype("arial.ttf", 30)
+        font_text = ImageFont.truetype("arial.ttf", 20)
+    except:
+        font_title = ImageFont.load_default()
+        font_text = ImageFont.load_default()
+
+    # Add text
+    draw.text((20, 20), f"👤 {username}", fill="white", font=font_title)
+    draw.text((20, 60), f"📦 Public Repos: {public_repos}", fill="white", font=font_text)
+    draw.text((20, 90), f"👥 Followers: {followers}", fill="white", font=font_text)
+    draw.text((20, 120), "🚀 Top Repositories:", fill="white", font=font_text)
+
+    # List top repositories
+    y_offset = 150
+    for repo in top_repos:
+        draw.text((40, y_offset), f"⭐ {repo.get('stargazers_count', 0)} - {repo.get('name', 'N/A')}", fill="white", font=font_text)
+        y_offset += 30
+
+    # Load and paste the pie chart
+    pie_chart = Image.open(pie_chart_path).resize((350, 350))
+    img.paste(pie_chart, (400, 150))
+
+    # Save the final image
+    output_path = "github_wrapped.png"
+    img.save(output_path)
+    print(f"Image saved as {output_path}")
+
 
 if __name__ == "__main__":
     username = "LFGaming"  # Replace with any GitHub username
-    years = []  # Specify the years for which you want the data, or leave it as [] for the last year
+    years = [2025]  # Specify the years for which you want the data, or leave it as [] for the last year
     get_github_wrapped(username, years)
