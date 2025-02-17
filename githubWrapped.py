@@ -185,21 +185,22 @@ def get_github_wrapped(username, years=None):
             years = [datetime.datetime.now().year - 1]
             # print(f"📅 No years specified. Using data for {years[0]} by default.")
         
-        print(f"\n🎉 GitHub Wrapped {year} 🎉\n")
-        print(f"👤 Username: {user_data.get('login', 'N/A')}")
-        print(f"📛 Name: {user_data.get('name', 'N/A')}")
-        print(f"📝 Bio: {user_data.get('bio', 'N/A')}")
-        print(f"📦 Public Repos: {public_repos}")
-        print(f"👥 Followers: {followers} | Following: {user_data.get('following', 'N/A')}")
-        print(f"🔗 Profile URL: {user_data.get('html_url', 'N/A')}\n")
-
-        print("🚀 Top 5 Repositories:")
-        top_repos = sorted(repos_data, key=lambda repo: repo.get('stargazers_count', 0), reverse=True)[:5]
-        for repo in top_repos:
-            print(f"  ⭐ {repo.get('stargazers_count', 0)} | {repo.get('name', 'N/A')} - {repo.get('html_url', 'N/A')}")
-
-
         for year in years:
+            print(f"\n🎉 GitHub Wrapped {year} 🎉\n")
+            print(f"👤 Username: {user_data.get('login', 'N/A')}")
+            print(f"📛 Name: {user_data.get('name', 'N/A')}")
+            print(f"📝 Bio: {user_data.get('bio', 'N/A')}")
+            print(f"📦 Public Repos: {public_repos}")
+            print(f"👥 Followers: {followers} | Following: {user_data.get('following', 'N/A')}")
+            print(f"🔗 Profile URL: {user_data.get('html_url', 'N/A')}\n")
+
+            print("🚀 Top 5 Repositories:")
+            top_repos = sorted(repos_data, key=lambda repo: repo.get('stargazers_count', 0), reverse=True)[:5]
+            for repo in top_repos:
+                print(f"  ⭐ {repo.get('stargazers_count', 0)} | {repo.get('name', 'N/A')} - {repo.get('html_url', 'N/A')}")
+
+
+        # for year in years:
             print(f"\n📊 GitHub Activity for {year}:")
             
             # Get commit count for the year
@@ -251,7 +252,6 @@ def get_github_wrapped(username, years=None):
     plt.savefig(pie_chart_path, bbox_inches="tight", facecolor="black")
     plt.close()
 
-
     # Create the final image
     img_width, img_height = 800, 600
     img = Image.new("RGB", (img_width, img_height), color=(20, 20, 20))
@@ -266,15 +266,15 @@ def get_github_wrapped(username, years=None):
         font_text = ImageFont.load_default()
 
     # Add text
-    draw.text((20, 20), f"👤 {username}", fill="white", font=font_title)
-    draw.text((20, 60), f"📦 Public Repos: {public_repos}", fill="white", font=font_text)
-    draw.text((20, 90), f"👥 Followers: {followers}", fill="white", font=font_text)
-    draw.text((20, 120), "🚀 Top Repositories:", fill="white", font=font_text)
+    draw.text((20, 20), f"{username}", fill="white", font=font_title)
+    draw.text((20, 60), f"Public Repos: {public_repos}", fill="white", font=font_text)
+    draw.text((20, 90), f"Followers: {followers}", fill="white", font=font_text)
+    draw.text((20, 120), "Top Repositories:", fill="white", font=font_text)
 
     # List top repositories
     y_offset = 150
     for repo in top_repos:
-        draw.text((40, y_offset), f"⭐ {repo.get('stargazers_count', 0)} - {repo.get('name', 'N/A')}", fill="white", font=font_text)
+        draw.text((40, y_offset), f"{repo.get('stargazers_count', 0)} - {repo.get('name', 'N/A')}", fill="white", font=font_text)
         y_offset += 30
 
     # Load and paste the pie chart
