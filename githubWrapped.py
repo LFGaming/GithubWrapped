@@ -180,7 +180,12 @@ def get_github_wrapped(username, years=None):
         followers = f'{user_data.get('followers', 'N/A')}'
         public_repos = f'{user_data.get('public_repos', 'N/A')}'
 
-        print("\n🎉 GitHub Wrapped 2024 🎉\n")
+        # Default to last year if no years are provided
+        if not years:
+            years = [datetime.datetime.now().year - 1]
+            # print(f"📅 No years specified. Using data for {years[0]} by default.")
+        
+        print(f"\n🎉 GitHub Wrapped {year} 🎉\n")
         print(f"👤 Username: {user_data.get('login', 'N/A')}")
         print(f"📛 Name: {user_data.get('name', 'N/A')}")
         print(f"📝 Bio: {user_data.get('bio', 'N/A')}")
@@ -193,10 +198,6 @@ def get_github_wrapped(username, years=None):
         for repo in top_repos:
             print(f"  ⭐ {repo.get('stargazers_count', 0)} | {repo.get('name', 'N/A')} - {repo.get('html_url', 'N/A')}")
 
-        # Default to last year if no years are provided
-        if not years:
-            years = [datetime.datetime.now().year - 1]
-            # print(f"📅 No years specified. Using data for {years[0]} by default.")
 
         for year in years:
             print(f"\n📊 GitHub Activity for {year}:")
