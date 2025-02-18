@@ -336,7 +336,7 @@ def get_github_wrapped(username, years=None):
     output_path = "github_wrapped.png"
     img.save(output_path)
     print(f"Image saved as {output_path}")
-    fetch_contribution_data(username, token, 2025)
+    fetch_contribution_data(username, token, year)
 
 
 if __name__ == "__main__":
