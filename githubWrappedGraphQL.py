@@ -202,7 +202,8 @@ def fetch_contribution_data(username, token, year):
                 if contribution_date.year == year:
                     total_contributions_year += day['contributionCount']
         
-        print(f"Total Contributions in {year}: {total_contributions_year}")
+        # print(f"Total Contributions in {year}: {total_contributions_year}")
+        return total_contributions_year
     else:
         print("Error: Data not found in the response.")
 
@@ -221,6 +222,7 @@ def get_github_wrapped(username, years=None):
     response = requests.get(user_url, headers=headers)
     repos_response = requests.get(repos_url, headers=headers)
     events_response = requests.get(events_url, headers=headers)
+    
 
     if response.status_code == 200 and repos_response.status_code == 200 and events_response.status_code == 200:
         user_data = response.json()
@@ -237,6 +239,7 @@ def get_github_wrapped(username, years=None):
             # print(f"📅 No years specified. Using data for {years[0]} by default.")
         
         for year in years:
+            total_contributions = fetch_contribution_data(username, token, year)
             print(f"\n🎉 GitHub Wrapped {year} 🎉\n")
             print(f"👤 Username: {user_data.get('login', 'N/A')}")
             print(f"📛 Name: {user_data.get('name', 'N/A')}")
@@ -260,13 +263,13 @@ def get_github_wrapped(username, years=None):
             # Get Pull Request and Issue counts for the year
             pr_opened, pr_closed, issues_opened, issues_closed = get_pr_and_issue_counts(username, headers, year)
 
-            commits = commit_count
+            commits = total_contributions
             prs_opened = pr_opened
             prs_closed = pr_closed
             issues_opened = issues_opened
             issues_closed = issues_closed
             
-            print(f"  ✅ Commits: {commit_count}")
+            print(f"  ✅ Commits: {total_contributions}")
             print(f"  🔀 Pull Requests Opened: {pr_opened}")
             print(f"  🔀 Pull Requests Closed: {pr_closed}")
             print(f"  📝 Issues Opened: {issues_opened}")
@@ -336,7 +339,6 @@ def get_github_wrapped(username, years=None):
     output_path = "github_wrapped.png"
     img.save(output_path)
     print(f"Image saved as {output_path}")
-    fetch_contribution_data(username, token, year)
 
 
 if __name__ == "__main__":
